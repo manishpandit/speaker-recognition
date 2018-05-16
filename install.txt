@@ -1,10 +1,17 @@
+* Open terminal (command prompt on windows).
 * Make sure you have python3 installed. Run: [python3 --version ] to check.
 * Make sure you have virtualenv installed. 
     + Run: [pip install virtualenv ]
     + Run: [virtualenv --version ]
 * cd to a dir under which you want to create this project's dir. example: ~/projects
-* run: [git clone <<url>> ]. This will create a speaker-recognition dir.
+* run: [git clone https://github.com/manishpandit/speaker-recognition.git ]. This will create a speaker-recognition dir.
 * run: [cd speaker-recognition ].
+* Download raw_data.zip file 
+    from GDrive [https://drive.google.com/file/d/1qvS8u78PzMXeek3kIgJnLG-7y-JlpMM_/view?usp=sharing]
+* Move raw_data.zip to project's /res folder and unzip. This should create a subfolder 
+    called /raw_data under /res. The folder structure should 
+    look like res/raw_data/anthonyschaller-20071221- etc.
+* For the following instructions, start from speaker-recognition dir 
 * run: [virtualenv -p python3 . ] (include the dot). This will create virtual env.
 * run: [pip install -r requirements.txt ]. This will install all the required packages.
 * run: [source bin/activate ]. Notice your prompt changed. Everytime you work with this project
@@ -12,6 +19,7 @@
 * The res/raw_data folder should be empty. This is where the VoxForge dataset resides. 
     I decided to exclude it since it is very large.
 * run: [cd code]. All the python files are meant to be run from /code folder.
+* run: [python3 voxforge.py ]. This will create h5 file from raw_data.
 * You can run: [python3 cnn_train.py ] to train the model. 
 * You can run: [python3 cnn_test.py ] to test the model.
 

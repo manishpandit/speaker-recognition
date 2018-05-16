@@ -1,0 +1,10 @@
+bin/
+include/
+lib/
+pip-selfcheck.json
+res/raw_data/
+res/model/
+*~
+__pycache__/
+.Python
+.vscode/

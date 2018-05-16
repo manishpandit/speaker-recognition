@@ -1,0 +1,19 @@
+* Make sure you have python3 installed. Run: [python3 --version ] to check.
+* Make sure you have virtualenv installed. 
+    + Run: [pip install virtualenv ]
+    + Run: [virtualenv --version ]
+* cd to a dir under which you want to create this project's dir. example: ~/projects
+* run: [git clone <<url>> ]. This will create a speaker-recognition dir.
+* run: [cd speaker-recognition ].
+* run: [virtualenv -p python3 . ] (include the dot). This will create virtual env.
+* run: [pip install -r requirements.txt ]. This will install all the required packages.
+* run: [source bin/activate ]. Notice your prompt changed. Everytime you work with this project
+    you should run this command. When you are done, run: [deactivate ].
+* The res/raw_data folder should be empty. This is where the VoxForge dataset resides. 
+    I decided to exclude it since it is very large.
+* You can run: [python3 cnn_train.py ] to train the model. 
+* You can run: [python3 cnn_test.py ] to test the model.
+
+
+
+

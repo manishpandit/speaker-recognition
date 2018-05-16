@@ -29,6 +29,9 @@ model_file = os.path.join(model_dir, "model.json")
 # model parameters (h5 format)
 model_params = os.path.join(model_dir, "model.h5")
 
+# model parameters (h5 format)
+model_plot = os.path.join(model_dir, "model_plot.png")
+
 # label mapping file
 labels_file = os.path.join(data_dir, "labels.json")
 

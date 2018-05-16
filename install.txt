@@ -11,6 +11,7 @@
     you should run this command. When you are done, run: [deactivate ].
 * The res/raw_data folder should be empty. This is where the VoxForge dataset resides. 
     I decided to exclude it since it is very large.
+* run: [cd code]. All the python files are meant to be run from /code folder.
 * You can run: [python3 cnn_train.py ] to train the model. 
 * You can run: [python3 cnn_test.py ] to test the model.
 

@@ -11,8 +11,9 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.utils import to_categorical
+from keras.utils.vis_utils import plot_model
 import voxforge
-from config import model_file, model_params
+from config import model_file, model_params, model_plot
 
 # get training and dev data
 X_Train, Y_Train = voxforge.get_train_data()
@@ -42,6 +43,12 @@ model.add(Dropout(0.25))
 model.add(BatchNormalization())
 # Softmax with number of distinct labels
 model.add(Dense(num_speakers, activation='softmax'))
+
+# print the model
+print(model.summary())
+
+# save the visual description of the model
+plot_model(model, to_file=model_plot, show_shapes=True, show_layer_names=True)
 
 # Compile the model with categorial cross entropy loss
 # Adadelta optimizer

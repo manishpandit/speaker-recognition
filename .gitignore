@@ -3,7 +3,9 @@ include/
 lib/
 pip-selfcheck.json
 res/raw_data/
+res/voxforge*/
 res/model/
+res/data/
 *~
 __pycache__/
 .Python

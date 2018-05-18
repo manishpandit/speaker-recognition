@@ -71,13 +71,12 @@ class Labels:
         return len(self.label_map)
 #################################### End class Labels #####################################
 
-def parse_label(dirpath):
+def parse_label(dir):
     ''' parse speaker label from file path '''
-    rpath = os.path.relpath(dirpath, raw_data_dir)
-    i = rpath.find('-')
+    i = dir.find('-')
     if i == -1:
         return None
-    return rpath[:i]
+    return dir[:i]
 
 def wav2mfcc(file_path, max_pad_len = 256):
     ''' convert wav file to mfcc matrix '''
@@ -103,7 +102,7 @@ def create_h5_file():
             # get mfcc matrix for this file
             mfcc = wav2mfcc(os.path.join(dirpath, filename))
             # get label for this file
-            label = parse_label(dirpath)
+            label = parse_label(os.path.relpath(dirpath, raw_data_dir))
             # convert to label id
             label_id = labels.add_label(label)
 
@@ -184,7 +183,31 @@ def get_test_data():
     '''
     return get_data("X_Test", "Y_Test")
 
+def get_speaker_map():
+    speaker_map = {}
+    for d in os.listdir(raw_data_dir):
+        audio_dir = os.path.join(raw_data_dir, d)
+        if not os.path.isdir(audio_dir):
+            continue
+        speaker = parse_label(d)
+        if speaker == None:
+            continue
+        for dirpath, dirnames, filenames in os.walk(audio_dir):
+            for filename in [f for f in filenames if f.endswith(".wav")]:
+                speaker_files = speaker_map.get(speaker, [])
+                speaker_files.append(os.path.join(dirpath, filename))
+                speaker_map[speaker] = speaker_files
+    return speaker_map
+
+def get_speaker_data(audio_files):
+    X = []
+    for f in audio_files:
+        mfcc = wav2mfcc(f)
+        X.append(mfcc)
+    return np.array(X)
+
 def main():
+        
     create_h5_file()
     X, Y = get_train_data()
     print("X_Train, Y_Train shape:", X.shape, Y.shape)
@@ -192,6 +215,13 @@ def main():
     print("X_Dev, Y_Dev shape:", X.shape, Y.shape)
     X, Y = get_test_data()
     print("X_Test, Y_Test shape:", X.shape, Y.shape)
+   
+
+    """ speaker_map = get_speaker_map()
+    for k, v in speaker_map.items():
+        print("speaker: ", k, end="\t")
+        print(get_speaker_data(v).shape) """
+
 
 if __name__ == '__main__':
     main()

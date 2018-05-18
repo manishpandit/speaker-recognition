@@ -30,6 +30,7 @@ print("Loaded model from disk")
 # evaluate loaded model on test data
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(), metrics=['accuracy'])
+
 score = model.evaluate(X, Y, verbose=0)
 print("%s: %.2f%%" % (model.metrics_names[1], score[1]*100))
 

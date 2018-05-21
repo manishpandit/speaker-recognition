@@ -183,29 +183,6 @@ def get_test_data():
     '''
     return get_data("X_Test", "Y_Test")
 
-def get_speaker_map():
-    speaker_map = {}
-    for d in os.listdir(raw_data_dir):
-        audio_dir = os.path.join(raw_data_dir, d)
-        if not os.path.isdir(audio_dir):
-            continue
-        speaker = parse_label(d)
-        if speaker == None:
-            continue
-        for dirpath, dirnames, filenames in os.walk(audio_dir):
-            for filename in [f for f in filenames if f.endswith(".wav")]:
-                speaker_files = speaker_map.get(speaker, [])
-                speaker_files.append(os.path.join(dirpath, filename))
-                speaker_map[speaker] = speaker_files
-    return speaker_map
-
-def get_speaker_data(audio_files):
-    X = []
-    for f in audio_files:
-        mfcc = wav2mfcc(f)
-        X.append(mfcc)
-    return np.array(X)
-
 def main():
         
     create_h5_file()
@@ -216,12 +193,6 @@ def main():
     X, Y = get_test_data()
     print("X_Test, Y_Test shape:", X.shape, Y.shape)
    
-
-    """ speaker_map = get_speaker_map()
-    for k, v in speaker_map.items():
-        print("speaker: ", k, end="\t")
-        print(get_speaker_data(v).shape) """
-
 
 if __name__ == '__main__':
     main()

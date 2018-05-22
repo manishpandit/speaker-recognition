@@ -9,10 +9,10 @@
 * Download raw_data.zip file (or the full dataset from voxforge)
     from GDrive [https://drive.google.com/file/d/1qvS8u78PzMXeek3kIgJnLG-7y-JlpMM_/view?usp=sharing]
 * Unzip raw_data.zip file somewhere on your computer; not in under project.
-* Create voxforge/archive under project root speaker-recognition.
-* Move the content dirs from under raw_data dir to voxforge/archive folder.
+* Create res/voxforge under project root speaker-recognition.
+* Move archive dir from under raw_data dir to under voxforge/ dir.
 * Finally the structure should look like as follows:
-    speaker-recognition/voxforge/archive/_caustic_-20170306-smy
+    speaker-recognition/res/voxforge/archive/_caustic_-20170306-smy
 * For the following instructions, start from speaker-recognition dir 
 * run: [virtualenv -p python3 . ] (include the dot). This will create virtual env.
 * run: [pip install -r requirements.txt ]. This will install all the required packages.

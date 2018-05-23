@@ -10,13 +10,14 @@ import keras
 from keras.models import model_from_json
 import numpy as np
 import voxforge
-from config import model_file, model_params, quick_test_dir
+from encoder import LabelEncoder
+from config import model_file, model_params, quick_test_dir, labels_file, MAX_PAD_LEN
 
 # load test data
 X, Y = voxforge.get_test_data()
 # load labels
-labels = voxforge.Labels()
-labels.load()
+encoder = LabelEncoder()
+encoder.load()
 
 # load json and create model
 json_file = open(model_file, 'r')
@@ -39,7 +40,7 @@ for f in os.listdir(quick_test_dir):
     if not f.endswith('.wav'):
         continue
     file_path = os.path.join(quick_test_dir, f)
-    mfcc = voxforge.wav2mfcc(file_path)
-    mfcc = mfcc.reshape(1, 20, 256, 1)
+    mfcc = voxforge.wav2mfcc(file_path, MAX_PAD_LEN)
+    mfcc = mfcc.reshape(1, 20, MAX_PAD_LEN, 1)
     label_id = np.argmax(model.predict(mfcc))
-    print("Audio file {0}, predicted speaker: {1}".format(f, labels.get_label(label_id)))
+    print("Audio file {0}, predicted speaker: {1}".format(f, encoder.decode(label_id)))

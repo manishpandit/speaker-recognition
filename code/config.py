@@ -37,3 +37,8 @@ model_params = os.path.join(model_dir, "model.h5")
 # quick test dir
 quick_test_dir = os.path.join(res_dir, "quick_test")
 
+# MFCC max_pad length
+MAX_PAD_LEN = 196
+
+# Number of training epochs
+EPOCH = 5

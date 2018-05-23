@@ -10,3 +10,4 @@ res/data/
 __pycache__/
 .Python
 .vscode/
+pyvenv.cfg

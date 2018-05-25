@@ -12,15 +12,15 @@ project_root = os.path.pardir
 res_dir = os.path.join(project_root, "res")
 
 # voxforge dataset root dir
-#raw_data_dir = os.path.join(res_dir, "voxforge/archive")
-raw_data_dir = os.path.join(res_dir, "voxforge_mini/archive")
+raw_data_dir = os.path.join(res_dir, "voxforge/archive")
+#raw_data_dir = os.path.join(res_dir, "voxforge_mini/archive")
 
 # dir where h5 file created from converting wav files
 data_dir = os.path.join(res_dir, "data")
 
 # name of the h5 data file
-#data_file = os.path.join(data_dir, "voxforge.h5")
-data_file = os.path.join(data_dir, "voxforge_mini.h5") 
+data_file = os.path.join(data_dir, "voxforge.h5")
+#data_file = os.path.join(data_dir, "voxforge_mini.h5") 
 
 # label mapping file
 labels_file = os.path.join(data_dir, "labels.json")

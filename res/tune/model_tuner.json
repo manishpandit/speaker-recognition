@@ -1,0 +1,18 @@
+{
+    "activation": [
+        "tanh", "relu"
+    ],
+    "optimizer": [
+        "rmsprop", "adam", "adadelta"
+    ],
+    "epochs": [
+        5,
+        10,
+        20,
+        25
+    ],
+    "batch_size": [
+        64,
+        128
+    ]
+}

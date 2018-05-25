@@ -1,0 +1,127 @@
+#!/usr/bin/env python
+'''
+Wrapper class around speaker regocnition cnn model.
+provides utilities to save and load trained models.
+'''
+__author__ = "Sophia Zheng, Rish Gupta, and Manish Pandit"
+
+import os
+import keras
+from keras.models import Sequential, model_from_json
+from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
+from keras.layers.normalization import BatchNormalization
+from srs_params import HyperParams
+from config import model_file, model_params
+from config import ACTIVATION, OPTIMIZER, DROP_OUT
+
+
+class ModelBuilder:
+    ''' builds a convolutional nueral network model '''
+
+    def __init__(self, input_shape, num_categories):
+        ''' 
+        constructor 
+        input_shape: shape of X.  This is required for the input layer definition.
+        num_categories: number of unique softmax output values expected. 
+        In this case, number of unique speakers in the dataset.
+        '''
+        self.input_shape = input_shape
+        self.num_categories = num_categories
+        self.activation = ACTIVATION
+        self.optimizer = OPTIMIZER
+        self.dropout = DROP_OUT
+
+    def __call__(self, activation = ACTIVATION, optimizer = OPTIMIZER,
+         dropout = DROP_OUT):
+        ''' 
+        default method on this object. It was designed to support KerasClassifier definition.
+        activation: activation function to use for all layers except the output layer.
+            valid values are: 'relu' and 'tanh'
+        optimizer: optimizer to use for gradient descent.
+            valid values are: 'rmsprop', 'adam' and 'adadelta'
+        dropout: dropout rate.
+        The default values are read from config.
+        '''
+        self.activation = activation
+        self.optimizer = optimizer
+        self.dropout = dropout
+
+        # sequential model
+        model = Sequential()
+        # Convolution layer: 3X3 filter, 32 filters, relu
+        model.add(Conv2D(32, kernel_size=(3, 3),  padding='same', 
+            activation=self.activation, input_shape=self.input_shape))
+        # Max pool later 2, 2
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        # Batch norm
+        model.add(BatchNormalization())
+        # Convolution layer: 3X3 filter, 64 filters, relu
+        model.add(Conv2D(64, kernel_size=(3, 3),  padding='same', 
+            activation=self.activation))
+        # Max pool later 2, 2
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        # dropout for regularization
+        model.add(Dropout(self.dropout))
+        # Flatten
+        model.add(Flatten())
+        # Batch norm
+        model.add(BatchNormalization())
+        # Dense 2048, relu
+        model.add(Dense(2048, activation=self.activation))
+        # dropout for regularization
+        model.add(Dropout(self.dropout))
+        # Batch norm
+        model.add(BatchNormalization())
+        # Softmax with number of distinct labels
+        model.add(Dense(self.num_categories, activation='softmax'))
+
+        # Compile the model with categorial cross entropy loss
+        # Adadelta optimizer
+        model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=self.optimizer_instance(),
+              metrics=['acc'])
+
+        return model
+
+    def optimizer_instance(self):
+        opt = None
+        if self.optimizer == 'rmsprop':
+            opt = keras.optimizers.rmsprop()
+        elif self.optimizer == 'adam':
+            opt = keras.optimizers.Adam()
+        elif self.optimizer == 'adadelta':
+            opt = keras.optimizers.Adadelta()
+        return opt
+
+    def hyper_params(self):
+        ''' return HyperParams object '''
+        return self.hp
+
+    def save(self, model):
+        ''' serialize model and parameters ''' 
+        if not os.path.exists(os.path.dirname(model_file)):
+            os.makedirs(os.path.dirname(model_file))
+            
+        model_json = model.to_json()
+        with open(model_file, "w") as json_file:
+            json_file.write(model_json)
+
+        # serialize weights to HDF5
+        model.save_weights(model_params)
+        print("Saved model to disk")
+    
+    def load(self):
+        ''' serialize model and parameters ''' 
+        # load json and create model
+        json_file = open(model_file, 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        model = model_from_json(loaded_model_json)
+        # load weights into new model
+        model.load_weights(model_params)
+        print("Loaded model from disk")
+        # compile
+        model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=self.optimizer_instance(),
+              metrics=['acc'])
+        return model

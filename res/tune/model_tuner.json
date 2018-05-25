@@ -1,0 +1,15 @@
+{
+    "activation": [
+        "tanh"
+    ],
+    "optimizer": [
+        "rmsprop"
+    ],
+    "epochs": [
+        2,
+        5
+    ],
+    "batch_size": [
+        64
+    ]
+}

@@ -34,11 +34,7 @@ def wav2mfcc(file_path, max_pad_len):
     mfcc = np.pad(mfcc, pad_width = ((0, 0), (0, pad_width)), mode = 'constant')
     return mfcc
 
-def create_h5_file():
-    ''' 
-    create h5 file with train, dev and test datasets.
-    create labels mapping file.
-    '''
+def data_from_files():
     encoder = LabelEncoder()
     mfcc_vectors = []
     label_vectors = []
@@ -68,7 +64,7 @@ def create_h5_file():
     # X is now a 4D matrix
     # convert Y to one hot encoding
     permutation = np.random.permutation(X_All.shape[0])
-    X_All = X_All[permutation].reshape(X_All.shape[0], 20, MAX_PAD_LEN, 1)
+    X_All = X_All[permutation].reshape(X_All.shape[0], X_All.shape[1], X_All.shape[2], 1)
     Y_All = Y_All[permutation].reshape(Y_All.shape[0], -1)
     Y_All = K.utils.to_categorical(Y_All)
 
@@ -85,6 +81,17 @@ def create_h5_file():
     # test
     X_Test = X_All[idx_dev:]
     Y_Test = Y_All[idx_dev:]
+
+    return X_Train, Y_Train, X_Dev, Y_Dev, X_Test, Y_Test
+
+def create_h5_file():
+    ''' 
+    create h5 file with train, dev and test datasets.
+    create labels mapping file.
+    '''
+    
+    # read the raw data dir and get sets
+    X_Train, Y_Train, X_Dev, Y_Dev, X_Test, Y_Test = data_from_files()
 
     # store the datasets to h5 file
     if not os.path.exists(os.path.dirname(data_file)):
@@ -105,6 +112,9 @@ def get_data(X_Set, Y_Set):
     returns numpy array of dataset stored in
     h5 file
     '''
+    if not os.path.exists(data_file):
+        create_h5_file()
+
     f = h5py.File(data_file, 'r')
     return f[X_Set], f[Y_Set]
 

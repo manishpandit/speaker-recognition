@@ -7,11 +7,11 @@ __author__ = "Sophia Zheng, Rish Gupta, and Manish Pandit"
 
 import os
 import keras
-from keras.models import model_from_json
 import numpy as np
 import voxforge
 from encoder import LabelEncoder
-from config import model_file, model_params, quick_test_dir, labels_file, MAX_PAD_LEN
+from config import quick_test_dir, MAX_PAD_LEN
+from srs_builder import ModelBuilder
 
 # load test data
 X, Y = voxforge.get_test_data()
@@ -19,19 +19,10 @@ X, Y = voxforge.get_test_data()
 encoder = LabelEncoder()
 encoder.load()
 
-# load json and create model
-json_file = open(model_file, 'r')
-loaded_model_json = json_file.read()
-json_file.close()
-model = model_from_json(loaded_model_json)
-# load weights into new model
-model.load_weights(model_params)
-print("Loaded model from disk")
+builder = ModelBuilder(X[0].shape, Y.shape[1])
+model = builder.load()
  
 # evaluate loaded model on test data
-model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.Adadelta(), metrics=['accuracy'])
-
 score = model.evaluate(X, Y, verbose=0)
 print("%s: %.2f%%" % (model.metrics_names[1], score[1]*100))
 

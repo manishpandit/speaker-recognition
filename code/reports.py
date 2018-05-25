@@ -10,6 +10,11 @@ from matplotlib import pyplot as plt
 from config import model_dir
 
 def plot_history(history):
+
+    # create model_dir if it doesn't exists
+    if not os.path.exists(model_dir):
+        os.makedirs(model_dir)
+    
     ''' plot history '''
     loss_list = [s for s in history.history.keys() if 'loss' in s and 'val' not in s]
     val_loss_list = [s for s in history.history.keys() if 'loss' in s and 'val' in s]
@@ -52,4 +57,4 @@ def plot_history(history):
     plt.ylabel('Accuracy')
     plt.legend()
     plt.savefig(os.path.join(model_dir, 'accuracy.png'))
-    plt.show()
+    #plt.show()

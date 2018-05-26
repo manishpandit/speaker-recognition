@@ -6,10 +6,8 @@
         "rmsprop", "adam", "adadelta"
     ],
     "epochs": [
-        5,
         10,
-        20,
-        25
+        20
     ],
     "batch_size": [
         64,

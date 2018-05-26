@@ -38,18 +38,12 @@ class Tuner:
         model = KerasClassifier(build_fn=ModelBuilder(X_Train[0].shape, num_speakers),
                                 epochs=self.epochs, 
                                 batch_size=self.batchsize,
-                                verbose=1)
+                                verbose=0)
 
         # prepare the grid
         with open(model_tuner_file, "r") as fp:
             param_grid = json.load(fp)
-        '''
-        param_grid = {'activation':['relu','tanh'],
-                    'optimizer':('rmsprop','adam', 'adadelta'),
-                    'epochs':[2,5],
-                    'batch_size':[32,64]}
-        '''
-
+        
         # grid search for best hyper parameters
         grid = GridSearchCV(model,
                             param_grid=param_grid,
@@ -69,17 +63,6 @@ class Tuner:
 
 def main():
     Tuner().tune()
-    '''
-    param_grid = {'activation':['relu','tanh'],
-                    'optimizer':('rmsprop','adam', 'adadelta'),
-                    'epochs':[2,5],
-                    'batch_size':[32,64]}
-    
-    if not os.path.exists(os.path.dirname(model_tuner_file)):
-        os.makedirs(os.path.dirname(model_tuner_file))
-    with open(model_tuner_file, "w") as fp:
-        json.dump(param_grid, fp, indent=4)
-    '''
 
 if __name__ == '__main__':
     main()

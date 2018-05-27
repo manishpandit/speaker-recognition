@@ -11,19 +11,13 @@ from sklearn.model_selection import GridSearchCV
 from keras.wrappers.scikit_learn import KerasClassifier
 import voxforge
 from srs_builder import ModelBuilder
-from srs_params import HyperParams
-from config import model_hyper_params, model_tuner_file
+from config import hp_tuner_in, hp_tuner_out
+from config import epochs, batch_size
 
 class Tuner:
     ''' hyper parameter tuner '''
-    def __init__(self):
-        
-        hp = HyperParams()
-        self.activation = hp.activation
-        self.optimizer = hp.optimizer
-        self.dropout = hp.dropout
-        self.batchsize = hp.batchsize
-        self.epochs = hp.epochs
+    def __init__(self):      
+        pass
     
     def tune(self):
         # get all the data from files as numpy arrays
@@ -31,17 +25,18 @@ class Tuner:
         # in-memory representation is required.
         X_Train, Y_Train, X_Dev, Y_Dev, X_Test, Y_Test = voxforge.data_from_files()
         num_speakers = Y_Train.shape[1]
+        
         # GridSearchCV requires Y to be flat so reverse the one-hot.
         Y_Train = np.argmax(Y_Train, axis=1)
 
         # classifier wrapper around the model 
         model = KerasClassifier(build_fn=ModelBuilder(X_Train[0].shape, num_speakers),
-                                epochs=self.epochs, 
-                                batch_size=self.batchsize,
+                                epochs=epochs, 
+                                batch_size=batch_size,
                                 verbose=0)
 
         # prepare the grid
-        with open(model_tuner_file, "r") as fp:
+        with open(hp_tuner_in, "r") as fp:
             param_grid = json.load(fp)
         
         # grid search for best hyper parameters
@@ -57,7 +52,7 @@ class Tuner:
         print(grid_results.best_params_)
 
         # save the best hyper parameters
-        with open(model_hyper_params, 'w') as fp:
+        with open(hp_tuner_out, 'w') as fp:
             json.dump(grid_results.best_params_, fp, indent=4)
         return grid_results.best_params_
 

@@ -34,29 +34,35 @@ model_file = os.path.join(model_dir, "model.json")
 # model parameters (h5 format)
 model_params = os.path.join(model_dir, "model.h5")
 
-# model hyper parameters (json format)
-model_hyper_params = os.path.join(model_dir, "model_hp.json")
+# tuner dir
+tuner_dir = os.path.join(res_dir, "tuner")
 
-# tuner file (json format)
-model_tuner_file = os.path.join(res_dir, "tune/model_tuner.json")
+# input file for hyper parameters tuner (json format)
+hp_tuner_in = os.path.join(tuner_dir, "hp_tuner_in.json")
+
+# output file of hyper parameters tuner (json format)
+hp_tuner_out = os.path.join(tuner_dir, "hp_tuner_out.json")
+
+# dir where results are stored
+reports_dir = os.path.join(model_dir, "reports")
 
 # quick test dir
 quick_test_dir = os.path.join(res_dir, "quick_test")
 
 # MFCC max_pad length
-MAX_PAD_LEN = 196
+max_pad_len = 196
 
-# Default activation
-ACTIVATION = 'tanh'
+# Default activation: valid set: 'relu' and 'tanh'
+activation = 'relu'
 
-# Default optimizer 
-OPTIMIZER = 'adadelta'
+# Default optimizer: valid set: 'adadelta', 'adam' and 'rmsprop'
+optimizer = 'adadelta'
 
 # Default Number of training epochs
-EPOCHS = 20
+epochs = 32
 
 # Default batch size
-BATCH_SIZE = 64
+batch_size = 64
 
-# Default dropout
-DROP_OUT = 0.25
+# Default dropout rate
+dropout_rate = 0.30

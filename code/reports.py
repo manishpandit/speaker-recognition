@@ -7,13 +7,13 @@ __author__ = "Sophia Zheng, Rish Gupta, and Manish Pandit"
 
 import os
 from matplotlib import pyplot as plt
-from config import model_dir
+from config import reports_dir
 
 def plot_history(history):
 
     # create model_dir if it doesn't exists
-    if not os.path.exists(model_dir):
-        os.makedirs(model_dir)
+    if not os.path.exists(reports_dir):
+        os.makedirs(reports_dir)
     
     ''' plot history '''
     loss_list = [s for s in history.history.keys() if 'loss' in s and 'val' not in s]
@@ -41,7 +41,7 @@ def plot_history(history):
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.legend()
-    plt.savefig(os.path.join(model_dir, 'loss.png'))
+    plt.savefig(os.path.join(reports_dir, 'loss.png'))
 
     ## Accuracy
     plt.figure(2)
@@ -56,5 +56,5 @@ def plot_history(history):
     plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
     plt.legend()
-    plt.savefig(os.path.join(model_dir, 'accuracy.png'))
+    plt.savefig(os.path.join(reports_dir, 'accuracy.png'))
     #plt.show()

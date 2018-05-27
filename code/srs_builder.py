@@ -10,9 +10,8 @@ import keras
 from keras.models import Sequential, model_from_json
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
-from srs_params import HyperParams
 from config import model_file, model_params
-from config import ACTIVATION, OPTIMIZER, DROP_OUT
+from config import activation, optimizer, dropout_rate
 
 
 class ModelBuilder:
@@ -24,17 +23,6 @@ class ModelBuilder:
         input_shape: shape of X.  This is required for the input layer definition.
         num_categories: number of unique softmax output values expected. 
         In this case, number of unique speakers in the dataset.
-        '''
-        self.input_shape = input_shape
-        self.num_categories = num_categories
-        self.activation = ACTIVATION
-        self.optimizer = OPTIMIZER
-        self.dropout = DROP_OUT
-
-    def __call__(self, activation = ACTIVATION, optimizer = OPTIMIZER,
-         dropout = DROP_OUT):
-        ''' 
-        default method on this object. It was designed to support KerasClassifier definition.
         activation: activation function to use for all layers except the output layer.
             valid values are: 'relu' and 'tanh'
         optimizer: optimizer to use for gradient descent.
@@ -42,36 +30,50 @@ class ModelBuilder:
         dropout: dropout rate.
         The default values are read from config.
         '''
+        self.input_shape = input_shape
+        self.num_categories = num_categories
         self.activation = activation
         self.optimizer = optimizer
-        self.dropout = dropout
+        self.dropout_rate = dropout_rate
+        
+    def __call__(self, activation=activation, optimizer=optimizer, dropout_rate=dropout_rate):
+        ''' 
+        default method on this object. It was designed to support KerasClassifier definition.
+        '''
 
+        self.activation = activation
+        self.optimizer = optimizer
+        self.dropout_rate = dropout_rate
+        
         # sequential model
         model = Sequential()
-        # Convolution layer: 3X3 filter, 32 filters, relu
-        model.add(Conv2D(32, kernel_size=(3, 3),  padding='same', 
+        # Convolution layer: 3X3 filter, 16 filters
+        model.add(Conv2D(16, kernel_size=(3, 3),  padding='same', 
             activation=self.activation, input_shape=self.input_shape))
         # Max pool later 2, 2
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
         # Batch norm
         model.add(BatchNormalization())
-        # Convolution layer: 3X3 filter, 64 filters, relu
+        # Convolution layer: 3X3 filter, 32 filters
+        model.add(Conv2D(32, kernel_size=(3, 3),  padding='same', 
+            activation=self.activation))
+        # Max pool later 2, 2
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
+        # Batch norm
+        model.add(BatchNormalization())
+        # Convolution layer: 3X3 filter, 64 filters
         model.add(Conv2D(64, kernel_size=(3, 3),  padding='same', 
             activation=self.activation))
         # Max pool later 2, 2
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
+        # Batch norm
+        model.add(BatchNormalization())
         # dropout for regularization
-        model.add(Dropout(self.dropout))
+        model.add(Dropout(self.dropout_rate))
         # Flatten
         model.add(Flatten())
-        # Batch norm
-        model.add(BatchNormalization())
-        # Dense 2048, relu
-        model.add(Dense(2048, activation=self.activation))
         # dropout for regularization
-        model.add(Dropout(self.dropout))
-        # Batch norm
-        model.add(BatchNormalization())
+        model.add(Dropout(self.dropout_rate))
         # Softmax with number of distinct labels
         model.add(Dense(self.num_categories, activation='softmax'))
 
@@ -92,10 +94,6 @@ class ModelBuilder:
         elif self.optimizer == 'adadelta':
             opt = keras.optimizers.Adadelta()
         return opt
-
-    def hyper_params(self):
-        ''' return HyperParams object '''
-        return self.hp
 
     def save(self, model):
         ''' serialize model and parameters ''' 

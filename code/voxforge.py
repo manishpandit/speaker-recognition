@@ -15,7 +15,7 @@ import operator
 import numpy as np
 import keras as K
 from config import raw_data_dir, data_dir, data_file, labels_file
-from config import model_dir, model_file, model_params, MAX_PAD_LEN
+from config import model_dir, model_file, model_params, max_pad_len
 from encoder import LabelEncoder
 
 def parse_label(dir):
@@ -43,7 +43,7 @@ def data_from_files():
     for dirpath, dirnames, filenames in os.walk(raw_data_dir):
         for filename in [f for f in filenames if f.endswith(".wav")]:
             # get mfcc matrix for this file
-            mfcc = wav2mfcc(os.path.join(dirpath, filename), MAX_PAD_LEN)
+            mfcc = wav2mfcc(os.path.join(dirpath, filename), max_pad_len)
             # get label for this file
             label = parse_label(os.path.relpath(dirpath, raw_data_dir))
             label_id = encoder.add(label)

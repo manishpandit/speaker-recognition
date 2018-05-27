@@ -47,16 +47,16 @@ quick_test_dir = os.path.join(res_dir, "quick_test")
 MAX_PAD_LEN = 196
 
 # Default activation
-ACTIVATION = 'relu'
+ACTIVATION = 'tanh'
 
 # Default optimizer 
 OPTIMIZER = 'adadelta'
 
 # Default Number of training epochs
-EPOCHS = 5
+EPOCHS = 20
 
 # Default batch size
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 
 # Default dropout
 DROP_OUT = 0.25

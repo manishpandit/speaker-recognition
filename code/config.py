@@ -56,13 +56,13 @@ max_pad_len = 196
 activation = 'relu'
 
 # Default optimizer: valid set: 'adadelta', 'adam' and 'rmsprop'
-optimizer = 'adadelta'
+optimizer = 'adam'
 
 # Default Number of training epochs
-epochs = 32
+epochs = 60
 
 # Default batch size
-batch_size = 64
+batch_size = 32
 
 # Default dropout rate
-dropout_rate = 0.30
+dropout_rate = 0.25

@@ -59,10 +59,10 @@ activation = 'relu'
 optimizer = 'adam'
 
 # Default Number of training epochs
-epochs = 60
+epochs = 32
 
 # Default batch size
 batch_size = 32
 
 # Default dropout rate
-dropout_rate = 0.25
+dropout_rate = 0.10

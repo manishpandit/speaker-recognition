@@ -74,7 +74,7 @@ class ModelBuilder:
         # dropout for regularization
         model.add(Dropout(self.dropout_rate))
         # Dense layer
-        model.add(Dense(self.num_categories, activation=activation))
+        model.add(Dense(self.num_categories * 2, activation=activation))
         # Batch norm
         model.add(BatchNormalization())
         # dropout for regularization

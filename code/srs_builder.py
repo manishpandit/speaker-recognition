@@ -10,6 +10,7 @@ import keras
 from keras.models import Sequential, model_from_json
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
+from keras import regularizers
 from config import model_file, model_params
 from config import activation, optimizer, dropout_rate
 

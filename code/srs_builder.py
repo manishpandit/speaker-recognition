@@ -49,21 +49,25 @@ class ModelBuilder:
         model = Sequential()
         # Convolution layer: 3X3 filter, 32 filters
         model.add(Conv2D(32, kernel_size=(3, 3),  padding='same', 
-            activation=self.activation, input_shape=self.input_shape))
+            activation=self.activation,
+            input_shape=self.input_shape,
+            kernel_regularizer=regularizers.l2(0.01)))
         # Max pool later 2, 2
         model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
         # Batch norm
         model.add(BatchNormalization())
         # Convolution layer: 3X3 filter, 64 filters
         model.add(Conv2D(64, kernel_size=(3, 3),  padding='same', 
-            activation=self.activation))
+            activation=self.activation,
+            kernel_regularizer=regularizers.l2(0.01)))
         # Max pool later 2, 2
         model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
         # Batch norm
         model.add(BatchNormalization())
         # Convolution layer: 3X3 filter, 128 filters
         model.add(Conv2D(128, kernel_size=(3, 3),  padding='same', 
-            activation=self.activation))
+            activation=self.activation,
+            kernel_regularizer=regularizers.l2(0.01)))
         # Max pool later 2, 2
         model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
         # Batch norm
@@ -74,7 +78,9 @@ class ModelBuilder:
         # dropout for regularization
         model.add(Dropout(self.dropout_rate))
         # Dense layer
-        model.add(Dense(self.num_categories * 2, activation=activation))
+        model.add(Dense(self.num_categories * 2, 
+            activation=activation,
+            kernel_regularizer=regularizers.l2(0.01)))
         # Batch norm
         model.add(BatchNormalization())
         # dropout for regularization

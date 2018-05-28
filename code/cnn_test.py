@@ -37,9 +37,9 @@ for f in os.listdir(quick_test_dir):
     if not f.endswith('.wav'):
         continue
     file_path = os.path.join(quick_test_dir, f)
-    fbank = voxforge.wav2fbank(file_path, max_pad_len)
-    fbank = fbank.reshape(1, max_pad_len, 26, 1)
-    label_id = np.argmax(model.predict(fbank))
+    mfcc_feat = voxforge.wav2mfcc(file_path, max_pad_len)
+    mfcc_feat = mfcc_feat.reshape(1, max_pad_len, 13, 1)
+    label_id = np.argmax(model.predict(mfcc_feat))
     print("Audio file {0}, predicted speaker: {1}".format(f, encoder.decode(label_id)))
 
     sample_rate, samples = wav.read(os.path.join(quick_test_dir, f))

@@ -29,35 +29,36 @@ def parse_label(dir):
         return None
     return dir[:i]
 
-def wav2fbank(file_path, max_pad_len):
-    ''' convert wav file to filterbank energies matrix '''
-    (rate,sig) = wav.read(file_path)
-    fbank_feat = logfbank(sig,rate)
-    fbank_feat = fbank_feat[:max_pad_len, :]
-    pad_width = max_pad_len - fbank_feat.shape[0]
-    fbank_feat = np.pad(fbank_feat, pad_width = ((0, pad_width), (0, 0)), mode = 'constant')
-    return fbank_feat
+def wav2mfcc(file_path, max_pad_len):
+    ''' convert wav file to mfcc matrix '''
+    sample_rate, samples = wav.read(file_path)
+    frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
+    mfcc_feat = mfcc(samples, sample_rate)
+    mfcc_feat = mfcc_feat[:max_pad_len, :]
+    pad_width = max_pad_len - mfcc_feat.shape[0]
+    mfcc_feat = np.pad(mfcc_feat, pad_width = ((0, pad_width), (0, 0)), mode = 'constant')
+    return mfcc_feat
 
 def data_from_files():
     encoder = LabelEncoder()
-    fbank_vectors = []
+    mfcc_vectors = []
     label_vectors = []
     
     # walk the data dir looking for wav file
     for dirpath, dirnames, filenames in os.walk(raw_data_dir):
         for filename in [f for f in filenames if f.endswith(".wav")]:
             # get mfcc matrix for this file
-            mfcc = wav2fbank(os.path.join(dirpath, filename), max_pad_len)
+            mfcc = wav2mfcc(os.path.join(dirpath, filename), max_pad_len)
             # get label for this file
             label = parse_label(os.path.relpath(dirpath, raw_data_dir))
             label_id = encoder.add(label)
             # add mfcc
-            fbank_vectors.append(mfcc)
+            mfcc_vectors.append(mfcc)
             # add label
             label_vectors.append(label_id)
        
     # create numpy array for X and Y
-    X_All = np.array(fbank_vectors)
+    X_All = np.array(mfcc_vectors)
     Y_All = np.array(label_vectors)
    
     # save labels file

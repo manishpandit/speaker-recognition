@@ -3,17 +3,21 @@
 provides functionality to manage audio data.
 creates h5 file and labels mapping file from 
 voxforge dataset.
-converts wav files to mfcc matrix.
+converts wav files to filterbank energies matrix.
 '''
 __author__ = "Sophia Zheng, Rish Gupta, and Manish Pandit"
 
 import os
-import librosa
 import h5py
 import json
 import operator
 import numpy as np
 import keras as K
+import matplotlib.pyplot as plt
+from scipy import signal
+import scipy.io.wavfile as wav
+from python_speech_features import mfcc
+from python_speech_features import logfbank
 from config import raw_data_dir, data_dir, data_file, labels_file
 from config import model_dir, model_file, model_params, max_pad_len
 from encoder import LabelEncoder
@@ -25,37 +29,37 @@ def parse_label(dir):
         return None
     return dir[:i]
 
-def wav2mfcc(file_path, max_pad_len):
-    ''' convert wav file to mfcc matrix '''
-    wave, sample_rate = librosa.load(file_path, mono = True, sr = None)
-    mfcc = librosa.feature.mfcc(wave, sample_rate)
-    mfcc = mfcc[:, :max_pad_len]
-    pad_width = max_pad_len - mfcc.shape[1]
-    mfcc = np.pad(mfcc, pad_width = ((0, 0), (0, pad_width)), mode = 'constant')
-    return mfcc
+def wav2fbank(file_path, max_pad_len):
+    ''' convert wav file to filterbank energies matrix '''
+    (rate,sig) = wav.read(file_path)
+    fbank_feat = logfbank(sig,rate)
+    fbank_feat = fbank_feat[:max_pad_len, :]
+    pad_width = max_pad_len - fbank_feat.shape[0]
+    fbank_feat = np.pad(fbank_feat, pad_width = ((0, pad_width), (0, 0)), mode = 'constant')
+    return fbank_feat
 
 def data_from_files():
     encoder = LabelEncoder()
-    mfcc_vectors = []
+    fbank_vectors = []
     label_vectors = []
     
     # walk the data dir looking for wav file
     for dirpath, dirnames, filenames in os.walk(raw_data_dir):
         for filename in [f for f in filenames if f.endswith(".wav")]:
             # get mfcc matrix for this file
-            mfcc = wav2mfcc(os.path.join(dirpath, filename), max_pad_len)
+            mfcc = wav2fbank(os.path.join(dirpath, filename), max_pad_len)
             # get label for this file
             label = parse_label(os.path.relpath(dirpath, raw_data_dir))
             label_id = encoder.add(label)
             # add mfcc
-            mfcc_vectors.append(mfcc)
+            fbank_vectors.append(mfcc)
             # add label
             label_vectors.append(label_id)
        
     # create numpy array for X and Y
-    X_All = np.array(mfcc_vectors)
+    X_All = np.array(fbank_vectors)
     Y_All = np.array(label_vectors)
-    
+   
     # save labels file
     encoder.save()
 
@@ -140,7 +144,7 @@ def get_test_data():
     return get_data("X_Test", "Y_Test")
 
 def main():
-        
+
     create_h5_file()
     X, Y = get_train_data()
     print("X_Train, Y_Train shape:", X.shape, Y.shape)
@@ -148,7 +152,6 @@ def main():
     print("X_Dev, Y_Dev shape:", X.shape, Y.shape)
     X, Y = get_test_data()
     print("X_Test, Y_Test shape:", X.shape, Y.shape)
-   
 
 if __name__ == '__main__':
     main()

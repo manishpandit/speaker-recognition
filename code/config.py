@@ -50,7 +50,7 @@ reports_dir = os.path.join(model_dir, "reports")
 quick_test_dir = os.path.join(res_dir, "quick_test")
 
 # MFCC max_pad length
-max_pad_len = 196
+max_pad_len = 600
 
 # Default activation: valid set: 'relu' and 'tanh'
 activation = 'relu'
@@ -59,10 +59,13 @@ activation = 'relu'
 optimizer = 'adam'
 
 # Default Number of training epochs
-epochs = 32
+epochs = 50
 
 # Default batch size
 batch_size = 32
 
 # Default dropout rate
 dropout_rate = 0.10
+
+# lamda value of the regulizer. set it to zero for no regularizarion.
+lambda_regularizer = 0.01

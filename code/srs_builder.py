@@ -12,7 +12,7 @@ from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 from keras import regularizers
 from config import model_file, model_params
-from config import activation, optimizer, dropout_rate
+from config import activation, optimizer, dropout_rate, lambda_regularizer
 
 
 class ModelBuilder:
@@ -49,7 +49,7 @@ class ModelBuilder:
         # sequential model
         model = Sequential()
         # Convolution layer: 3X3 filter, 32 filters
-        model.add(Conv2D(32, kernel_size=(3, 3),  padding='same', 
+        model.add(Conv2D(4, kernel_size=(3, 3),  padding='same', 
             activation=self.activation,
             input_shape=self.input_shape))
         # Max pool later 2, 2
@@ -57,14 +57,14 @@ class ModelBuilder:
         # Batch norm
         model.add(BatchNormalization())
         # Convolution layer: 3X3 filter, 64 filters
-        model.add(Conv2D(64, kernel_size=(3, 3),  padding='same', 
+        model.add(Conv2D(8, kernel_size=(3, 3),  padding='same', 
             activation=self.activation))
         # Max pool later 2, 2
         model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
         # Batch norm
         model.add(BatchNormalization())
         # Convolution layer: 3X3 filter, 128 filters
-        model.add(Conv2D(128, kernel_size=(3, 3),  padding='same', 
+        model.add(Conv2D(16, kernel_size=(3, 3),  padding='same', 
             activation=self.activation))
         # Max pool later 2, 2
         model.add(MaxPooling2D(pool_size=(2, 2), strides=2))
@@ -78,7 +78,7 @@ class ModelBuilder:
         # Dense layer
         model.add(Dense(self.num_categories * 2, 
             activation=activation,
-            kernel_regularizer=regularizers.l2(0.01)))
+            kernel_regularizer=regularizers.l2(lambda_regularizer)))
         # Batch norm
         model.add(BatchNormalization())
         # dropout for regularization

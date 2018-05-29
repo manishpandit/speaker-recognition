@@ -8,9 +8,15 @@ __author__ = "Sophia Zheng, Rish Gupta, and Manish Pandit"
 import os
 import keras
 import numpy as np
+import scipy.io.wavfile as wav
+from scipy import signal
+from matplotlib import pyplot as plt
+from matplotlib import cm
+from python_speech_features import mfcc
+from python_speech_features import logfbank
 import voxforge
 from encoder import LabelEncoder
-from config import quick_test_dir, max_pad_len
+from config import quick_test_dir, reports_dir, max_pad_len
 from srs_builder import ModelBuilder
 
 # load test data
@@ -23,7 +29,7 @@ builder = ModelBuilder(X[0].shape, Y.shape[1])
 model = builder.load()
  
 # evaluate loaded model on test data
-score = model.evaluate(X, Y, verbose=0)
+score = model.evaluate(X, Y, verbose=1)
 print("%s: %.2f%%" % (model.metrics_names[1], score[1]*100))
 
 # perform quick tests
@@ -31,7 +37,38 @@ for f in os.listdir(quick_test_dir):
     if not f.endswith('.wav'):
         continue
     file_path = os.path.join(quick_test_dir, f)
-    mfcc = voxforge.wav2mfcc(file_path, max_pad_len)
-    mfcc = mfcc.reshape(1, 20, max_pad_len, 1)
-    label_id = np.argmax(model.predict(mfcc))
+    mfcc_feat = voxforge.wav2mfcc(file_path, max_pad_len)
+    mfcc_feat = mfcc_feat.reshape(1, 20, max_pad_len, 1)
+    label_id = np.argmax(model.predict(mfcc_feat))
     print("Audio file {0}, predicted speaker: {1}".format(f, encoder.decode(label_id)))
+
+    sample_rate, samples = wav.read(os.path.join(quick_test_dir, f))
+    frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
+    mfcc_feat = mfcc(samples, sample_rate)
+    fbank_feat = logfbank(samples, sample_rate)
+
+    plt.figure(1)
+    plt.pcolormesh(times, frequencies, spectrogram)
+    plt.imshow(spectrogram)
+    plt.ylabel('Frequency [Hz]')
+    plt.xlabel('Time [sec]')
+    #save the spectrogram
+    plt.savefig(os.path.join(reports_dir, f + '_spectro.png'))
+
+    plt.figure(2)
+    ig, ax = plt.subplots()
+    mfcc_data = np.swapaxes(mfcc_feat, 0 ,1)
+    cax = ax.imshow(mfcc_data, interpolation='nearest', cmap=cm.coolwarm, origin='lower', aspect='auto')
+    ax.set_title('MFCC')
+    #plot mfcc_feat
+    plt.plot(mfcc_feat)    
+    plt.savefig(os.path.join(reports_dir, f + '_mfcc_feat.png'))
+
+    plt.figure(3)
+    ig, ax = plt.subplots()
+    fbank_data = np.swapaxes(fbank_feat, 0 ,1)
+    cax = ax.imshow(mfcc_data, interpolation='nearest', cmap=cm.coolwarm, origin='lower', aspect='auto')
+    ax.set_title('Filter Bank')
+    #plot fbank_feat
+    plt.plot(fbank_feat)    
+    plt.savefig(os.path.join(reports_dir, f + '_fbank_feat.png'))

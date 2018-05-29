@@ -59,10 +59,13 @@ activation = 'relu'
 optimizer = 'adam'
 
 # Default Number of training epochs
-epochs = 32
+epochs = 100
 
 # Default batch size
 batch_size = 32
 
 # Default dropout rate
 dropout_rate = 0.10
+
+# lamda value of the regulizer. set it to zero for no regularizarion.
+lambda_regularizer = 0.002

@@ -13,6 +13,7 @@ import voxforge
 from reports import plot_history
 from srs_builder import ModelBuilder
 from config import activation, optimizer, dropout_rate, epochs, batch_size
+from config import reports_dir
 
 # get training and dev data
 X_Train, Y_Train = voxforge.get_train_data()

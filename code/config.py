@@ -59,7 +59,7 @@ activation = 'relu'
 optimizer = 'adam'
 
 # Default Number of training epochs
-epochs = 100
+epochs = 60
 
 # Default batch size
 batch_size = 32

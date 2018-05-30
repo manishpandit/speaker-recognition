@@ -77,7 +77,7 @@ class ModelBuilder:
         model.add(Dropout(self.dropout_rate))
         # Dense layer
         model.add(Dense(self.num_categories * 2, 
-            activation=activation,
+            activation=self.activation,
             kernel_regularizer=regularizers.l2(0.001)))
         # Batch norm
         model.add(BatchNormalization())

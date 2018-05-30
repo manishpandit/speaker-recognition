@@ -68,4 +68,4 @@ batch_size = 64
 dropout_rate = 0.25
 
 # lamda value of the regulizer. set it to zero for no regularizarion.
-lambda_regularizer = 0.002
+lambda_regularizer = 0.005

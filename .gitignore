@@ -2,10 +2,10 @@
 __pycache__/
 .Python
 .vscode/
-pyvenv.cfg
 bin/
 include/
 lib/
-pip-selfcheck.json
-res/voxforge*/
+res/voxforge/
 res/data/
+venv/
+

@@ -1,6 +1,0 @@
-{
-    "activation": "relu",
-    "batch_size": 64,
-    "epochs": 2,
-    "optimizer": "adadelta"
-}

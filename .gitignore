@@ -8,4 +8,6 @@ lib/
 res/voxforge/
 res/data/
 venv/
-
+*.h5
+.ipynb_checkpoints/
+spr_logs/
